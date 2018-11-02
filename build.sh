@@ -1,0 +1,1 @@
+go build -a -installsuffix cgo -o go-1password .
