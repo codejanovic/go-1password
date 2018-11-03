@@ -101,15 +101,27 @@ func main() {
 		},
 		{
 			Name:  "profile",
-			Usage: "profile optioms",
-			Action: func(c *cli.Context) error {
-				return nil
-			},
+			Usage: "profile options",
 			Subcommands: []cli.Command{
 				{
-					Name:  "list",
-					Usage: "list all profiles",
+					Name:      "list",
+					Usage:     "list all profiles within a vault",
+					ArgsUsage: "$0{vault identifier|alias}",
 					Action: func(c *cli.Context) error {
+						response, err := usecase.NewListProfileUsecase().Execute(&usecase.ListProfileRequest{
+							VaultAliasOrIdentifier: c.Args().Get(0),
+						})
+						if err != nil {
+							return err
+						}
+						var output strings.Builder
+						for i, profile := range response.Found {
+							if i > 0 {
+								output.WriteString(", ")
+							}
+							output.WriteString(profile)
+						}
+						log.Println("profiles found: " + output.String())
 						return nil
 					},
 				},

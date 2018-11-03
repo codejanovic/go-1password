@@ -4,6 +4,7 @@ package vault
 type Vault interface {
 	TryOpenProfile(name string, secret string) bool
 	OpenProfile(name string, secret string) (Profile, error)
+	Profiles() ([]string, error)
 }
 
 // Profile interface

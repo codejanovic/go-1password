@@ -30,6 +30,15 @@ func (v *opVault) TryOpenProfile(name string, secret string) bool {
 	return err == nil
 }
 
+// Profiles get all found profile names
+func (v *opVault) Profiles() ([]string, error) {
+	names, err := v.vault.ProfileNames()
+	if err != nil {
+		return nil, errors.New("Unable to fetch profiles from vault. Reason: " + err.Error())
+	}
+	return names, nil
+}
+
 // OpenProfile method
 func (v *opVault) OpenProfile(name string, secret string) (Profile, error) {
 	profile, err := v.vault.Profile(name)
