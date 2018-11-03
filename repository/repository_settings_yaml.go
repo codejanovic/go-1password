@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+	"log"
+
 	environment "github.com/codejanovic/go-1password/environment"
 	io "github.com/codejanovic/go-1password/io"
 	model "github.com/codejanovic/go-1password/model"
@@ -28,11 +31,18 @@ func (s *settingsRepositoryYaml) Fetch() model.Settings {
 }
 
 func (s *settingsRepositoryYaml) Store(settings model.Settings) {
+	yamlSettings, ok := settings.(*model.SettingsYaml)
+	if !ok {
+		throw.Throw(fmt.Errorf("We encountered a problem while persisting settings file"), "This looks like a programming error")
+	}
+
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
-	data, err := yaml.Marshal(&settings)
+	data, err := yaml.Marshal(&yamlSettings)
 	if err != nil {
 		panic(err)
 	}
+
+	log.Println("storing " + string(data))
 	err = settingsFile.Write(data)
 	if err != nil {
 		panic(err)
@@ -57,6 +67,5 @@ func (s *settingsRepositoryYaml) init() {
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
 	if !settingsFile.Exists() {
 		settingsFile.Create()
-		s.Store(model.NewSettingsYaml())
 	}
 }

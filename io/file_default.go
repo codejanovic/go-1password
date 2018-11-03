@@ -1,14 +1,29 @@
 package io
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
+
+	throw "github.com/codejanovic/go-1password/throw"
 )
 
 // FileByPath implementing File interface
 type FileByPath struct {
 	path string
+}
+
+// NewFileByAbsolutePath creates a new file by path
+func NewFileByAbsolutePath(path string) File {
+	file := new(FileByPath)
+	absolutePath, err := filepath.Abs(path)
+	if err != nil {
+		throw.Throw(fmt.Errorf("Unable to create absolute path for %s", path), "Maybe the path is incorrect, or the opvault does not exist?")
+	}
+	file.path = absolutePath
+	return file
 }
 
 // NewFileByPath creates a new file by path

@@ -13,29 +13,29 @@ type ListVault struct {
 	Alias string
 }
 
-// Response struct
-type Response struct {
+// ListVaultResponse struct
+type ListVaultResponse struct {
 	Found []*ListVault
 }
 
 //HasVaults returns whether or not vaults have been found
-func (r *Response) HasVaults() bool {
+func (r *ListVaultResponse) HasVaults() bool {
 	return len(r.Found) > 0
 }
 
-var singleton *ListVaultUsecase
+var listVaultSingleton *ListVaultUsecase
 
 func init() {
-	singleton = &ListVaultUsecase{}
+	listVaultSingleton = &ListVaultUsecase{}
 }
 
 // NewListVaultUsecase constructor
 func NewListVaultUsecase() *ListVaultUsecase {
-	return singleton
+	return listVaultSingleton
 }
 
 // Execute the usecase
-func (u *ListVaultUsecase) Execute() *Response {
+func (u *ListVaultUsecase) Execute() *ListVaultResponse {
 	settingsRepository := repository.NewSettingsRepositoryYaml()
 	settings := settingsRepository.Fetch()
 	vaults := settings.Vaults()
@@ -45,7 +45,7 @@ func (u *ListVaultUsecase) Execute() *Response {
 			Alias: vault.Alias(),
 		})
 	}
-	return &Response{
+	return &ListVaultResponse{
 		Found: found,
 	}
 }

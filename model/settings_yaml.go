@@ -8,23 +8,23 @@ import (
 
 // SettingsYaml in yaml
 type SettingsYaml struct {
-	vaults []*VaultSettingYaml `yaml:"vaults"`
+	VaultsInternal []*VaultSettingYaml `yaml:"vaults"`
 }
 
 // NewSettingsYaml constructor
 func NewSettingsYaml() Settings {
 	return &SettingsYaml{
-		vaults: make([]*VaultSettingYaml, 0),
+		VaultsInternal: make([]*VaultSettingYaml, 0),
 	}
 }
 
 // Vaults returning configured vaults
 func (s *SettingsYaml) Vaults() []VaultSetting {
-	if s.vaults == nil {
+	if s.VaultsInternal == nil {
 		return make([]VaultSetting, 0)
 	}
-	vaultSettings := make([]VaultSetting, len(s.vaults))
-	for i, v := range s.vaults {
+	vaultSettings := make([]VaultSetting, len(s.VaultsInternal))
+	for i, v := range s.VaultsInternal {
 		vaultSettings[i] = v
 	}
 	return vaultSettings
@@ -32,8 +32,8 @@ func (s *SettingsYaml) Vaults() []VaultSetting {
 
 // Active returning configured vaults
 func (s *SettingsYaml) Active() (VaultSetting, error) {
-	for _, v := range s.vaults {
-		if v.active {
+	for _, v := range s.VaultsInternal {
+		if v.ActiveInternal {
 			return v, nil
 		}
 	}
@@ -42,37 +42,37 @@ func (s *SettingsYaml) Active() (VaultSetting, error) {
 }
 
 // Add and return vault
-func (s *SettingsYaml) Add(path string, alias string) (VaultSetting, error) {
-	if s.vaults == nil {
-		s.vaults = make([]*VaultSettingYaml, 0)
+func (s *SettingsYaml) Add(vaultPath string, vaultAlias string) (VaultSetting, error) {
+	if s.VaultsInternal == nil {
+		s.VaultsInternal = make([]*VaultSettingYaml, 0)
 	}
 
-	_, err := s.Find(alias)
+	_, err := s.Find(vaultAlias)
 	if err == nil {
-		return nil, errors.New("a vault with alias " + alias + " already exists")
+		return nil, errors.New("a vault with alias " + vaultAlias + " already exists")
 	}
 
 	vaultToAdd := &VaultSettingYaml{
-		active:     false,
-		path:       path,
-		alias:      alias,
-		identifier: uuid.Must(uuid.NewV4()).String(),
+		ActiveInternal:     false,
+		PathInternal:       vaultPath,
+		AliasInternal:      vaultAlias,
+		IdentifierInternal: uuid.Must(uuid.NewV4()).String(),
 	}
 
-	s.vaults = append(s.vaults, vaultToAdd)
-	s.Activate(vaultToAdd.identifier)
+	s.VaultsInternal = append(s.VaultsInternal, vaultToAdd)
+	s.Activate(vaultToAdd.IdentifierInternal)
 	return vaultToAdd, nil
 }
 
 // Activate a vault
 func (s *SettingsYaml) Activate(identifierOrAlias string) VaultSetting {
 	var activatedVault VaultSetting
-	for _, v := range s.vaults {
+	for _, v := range s.VaultsInternal {
 		if v.IsEqualTo(identifierOrAlias) {
-			v.active = true
+			v.ActiveInternal = true
 			activatedVault = v
 		} else {
-			v.active = false
+			v.ActiveInternal = false
 		}
 	}
 	return activatedVault
@@ -80,7 +80,7 @@ func (s *SettingsYaml) Activate(identifierOrAlias string) VaultSetting {
 
 // Find a vault
 func (s *SettingsYaml) Find(identifierOrAlias string) (VaultSetting, error) {
-	for _, vault := range s.vaults {
+	for _, vault := range s.VaultsInternal {
 		if vault.IsEqualTo(identifierOrAlias) {
 			return vault, nil
 		}
@@ -90,5 +90,15 @@ func (s *SettingsYaml) Find(identifierOrAlias string) (VaultSetting, error) {
 
 // Remove a vault
 func (s *SettingsYaml) Remove(identifierOrAlias string) {
+	vaultToRemove := -1
+	for i, vault := range s.VaultsInternal {
+		if vault.IsEqualTo(identifierOrAlias) {
+			vaultToRemove = i
+			break
+		}
+	}
 
+	if vaultToRemove != -1 {
+		s.VaultsInternal = append(s.VaultsInternal[:vaultToRemove], s.VaultsInternal[vaultToRemove+1:]...)
+	}
 }

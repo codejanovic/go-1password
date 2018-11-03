@@ -50,9 +50,18 @@ func main() {
 					},
 				},
 				{
-					Name:  "add",
-					Usage: "add {path/to/vault} {unique alias}",
+					Name:      "add",
+					Usage:     "add a vault to your configuration",
+					ArgsUsage: "$0{vault path}, $1{vault alias}",
 					Action: func(c *cli.Context) error {
+						response, err := usecase.NewAddVaultUsecase().Execute(&usecase.AddVaultRequest{
+							VaultPath:  c.Args().Get(0),
+							VaultAlias: c.Args().Get(1),
+						})
+						if err != nil {
+							return err
+						}
+						log.Printf("vault '%s' added successfully (%s)", response.Added.Alias(), response.Added.Path())
 						return nil
 					},
 				},
