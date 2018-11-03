@@ -93,7 +93,7 @@ func main() {
 						if err != nil {
 							return err
 						}
-						log.Printf("successfully signed into vault '%s' with profile '%s", c.Args().Get(0), c.Args().Get(1))
+						log.Printf("successfully signed into vault '%s' with profile '%s'", c.Args().Get(0), c.Args().Get(1))
 						return nil
 					},
 				},
