@@ -6,22 +6,22 @@ import (
 	"github.com/docker/docker-credential-helpers/secretservice"
 )
 
-// LinuxCredentialsRepository struct
-type LinuxCredentialsRepository struct {
+// linuxCredentialsRepository struct
+type linuxCredentialsRepository struct {
 	nativeStore credentials.Helper
 }
 
-var linuxCredentialsRepositorySingleton *LinuxCredentialsRepository
+var linuxCredentialsRepositorySingleton *linuxCredentialsRepository
 
 func init() {
-	linuxCredentialsRepositorySingleton = &LinuxCredentialsRepository{
+	linuxCredentialsRepositorySingleton = &linuxCredentialsRepository{
 		nativeStore: secretservice.Secretservice{},
 	}
 	credentialsRepositorySingleton = linuxCredentialsRepositorySingleton
 }
 
 // Store credentials
-func (r *LinuxCredentialsRepository) Store(identifier string, secret string) {
+func (r *linuxCredentialsRepository) Store(identifier string, secret string) {
 	err := r.nativeStore.Add(&credentials.Credentials{
 		ServerURL: identifier,
 		Secret:    secret,
@@ -33,16 +33,16 @@ func (r *LinuxCredentialsRepository) Store(identifier string, secret string) {
 }
 
 // Fetch credentials
-func (r *LinuxCredentialsRepository) Fetch(identifier string) string {
+func (r *linuxCredentialsRepository) Fetch(identifier string) (string, bool) {
 	_, secret, err := r.nativeStore.Get(identifier)
 	if err != nil {
-		throw.Throw(err, "Unable to access credentials store")
+		return "", false
 	}
-	return secret
+	return secret, true
 }
 
 // Remove credentials
-func (r *LinuxCredentialsRepository) Remove(identifier string) {
+func (r *linuxCredentialsRepository) Remove(identifier string) {
 	err := r.nativeStore.Delete(identifier)
 	if err != nil {
 		throw.Throw(err, "Unable to access credentials store")

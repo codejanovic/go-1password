@@ -64,7 +64,7 @@ func main() {
 						if err != nil {
 							return err
 						}
-						log.Printf("vault '%s' added successfully (%s)", response.Added.Alias(), response.Added.Path())
+						log.Printf("successfully added vault '%s' (%s)", response.Added.Alias(), response.Added.Path())
 						return nil
 					},
 				},
@@ -76,7 +76,7 @@ func main() {
 						usecase.NewRemoveVaultUsecase().Execute(&usecase.RemoveVaultRequest{
 							VaultAliasOrIdentifier: c.Args().Get(0),
 						})
-						log.Printf("vault '%s' removed successfully", c.Args().Get(0))
+						log.Printf("successfully removed vault '%s'", c.Args().Get(0))
 						return nil
 					},
 				},
@@ -85,6 +85,15 @@ func main() {
 					Usage:     "signin {vault name} {vault password}",
 					ArgsUsage: "$0{vault identifier|alias}, $1{vault profile}, $2{vault password}",
 					Action: func(c *cli.Context) error {
+						err := usecase.NewSignInVaultUsecase().Execute(&usecase.SignInVaultRequest{
+							VaultAliasOrIdentifier: c.Args().Get(0),
+							VaultProfile:           c.Args().Get(1),
+							VaultSecret:            c.Args().Get(2),
+						})
+						if err != nil {
+							return err
+						}
+						log.Printf("successfully signed into vault '%s' with profile '%s", c.Args().Get(0), c.Args().Get(1))
 						return nil
 					},
 				},

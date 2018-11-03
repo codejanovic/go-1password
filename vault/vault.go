@@ -1,4 +1,14 @@
-package main
+package vault
+
+// Vault interface
+type Vault interface {
+	TryOpenProfile(name string, secret string) bool
+	OpenProfile(name string, secret string) (Profile, error)
+}
+
+// Profile interface
+type Profile interface {
+}
 
 // import (
 // 	"log"

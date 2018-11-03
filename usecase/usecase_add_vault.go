@@ -37,7 +37,7 @@ func NewAddVaultUsecase() *AddVaultUsecase {
 
 // Execute the usecase
 func (u *AddVaultUsecase) Execute(request *AddVaultRequest) (*AddVaultResponse, error) {
-	err := validateRequest(request)
+	err := validateAddVaultRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (u *AddVaultUsecase) Execute(request *AddVaultRequest) (*AddVaultResponse, 
 	}, nil
 }
 
-func validateRequest(request *AddVaultRequest) error {
+func validateAddVaultRequest(request *AddVaultRequest) error {
 	if request.VaultPath == "" {
 		return errors.New("Please provide a valid path to the opvault file")
 	}

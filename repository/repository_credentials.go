@@ -2,7 +2,7 @@ package repository
 
 // CredentialsRepository interface
 type CredentialsRepository interface {
-	Fetch(identifier string) string
+	Fetch(identifier string) (string, bool)
 	Remove(identifier string)
 	Store(identifier string, secret string)
 }
