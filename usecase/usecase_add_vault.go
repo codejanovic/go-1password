@@ -41,7 +41,7 @@ func (u *AddVaultUsecase) Execute(request *AddVaultRequest) (*AddVaultResponse, 
 	if err != nil {
 		return nil, err
 	}
-	settingsRepository := repository.NewSettingsRepositoryYaml()
+	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 
 	_, err = settings.Find(request.VaultAlias)

@@ -10,7 +10,8 @@ type ListVaultUsecase struct {
 
 // ListVault struct
 type ListVault struct {
-	Alias string
+	Alias      string
+	Identifier string
 }
 
 // ListVaultResponse struct
@@ -36,13 +37,14 @@ func NewListVaultUsecase() *ListVaultUsecase {
 
 // Execute the usecase
 func (u *ListVaultUsecase) Execute() *ListVaultResponse {
-	settingsRepository := repository.NewSettingsRepositoryYaml()
+	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 	vaults := settings.Vaults()
 	var found []*ListVault
 	for _, vault := range vaults {
 		found = append(found, &ListVault{
-			Alias: vault.Alias(),
+			Alias:      vault.Alias(),
+			Identifier: vault.Identifier(),
 		})
 	}
 	return &ListVaultResponse{

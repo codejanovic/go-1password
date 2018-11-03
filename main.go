@@ -43,7 +43,10 @@ func main() {
 							if i > 0 {
 								output.WriteString(", ")
 							}
-							output.WriteString(found.Alias)
+							output.WriteString("[ ")
+							output.WriteString("id=" + found.Identifier)
+							output.WriteString(", alias=" + found.Alias)
+							output.WriteString(" ]")
 						}
 						log.Println(output.String())
 						return nil
@@ -66,8 +69,21 @@ func main() {
 					},
 				},
 				{
-					Name:  "signin",
-					Usage: "signin {vault name} {vault password}",
+					Name:      "remove",
+					Usage:     "remove a vault from your configuration",
+					ArgsUsage: "$1{vault identifier|alias}",
+					Action: func(c *cli.Context) error {
+						usecase.NewRemoveVaultUsecase().Execute(&usecase.RemoveVaultRequest{
+							VaultAliasOrIdentifier: c.Args().Get(0),
+						})
+						log.Printf("vault '%s' removed successfully", c.Args().Get(0))
+						return nil
+					},
+				},
+				{
+					Name:      "signin",
+					Usage:     "signin {vault name} {vault password}",
+					ArgsUsage: "$0{vault identifier|alias}, $1{vault profile}, $2{vault password}",
 					Action: func(c *cli.Context) error {
 						return nil
 					},

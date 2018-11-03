@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"log"
 
 	environment "github.com/codejanovic/go-1password/environment"
 	io "github.com/codejanovic/go-1password/io"
@@ -11,26 +10,15 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type settingsRepositoryYaml struct {
+type yamlSettingsRepository struct {
 }
 
-var singleton SettingsRepository
-
-func init() {
-	singleton = &settingsRepositoryYaml{}
-}
-
-// NewSettingsRepositoryYaml constructor
-func NewSettingsRepositoryYaml() SettingsRepository {
-	return singleton
-}
-
-func (s *settingsRepositoryYaml) Fetch() model.Settings {
+func (s *yamlSettingsRepository) Fetch() model.Settings {
 	s.init()
 	return s.read()
 }
 
-func (s *settingsRepositoryYaml) Store(settings model.Settings) {
+func (s *yamlSettingsRepository) Store(settings model.Settings) {
 	yamlSettings, ok := settings.(*model.SettingsYaml)
 	if !ok {
 		throw.Throw(fmt.Errorf("We encountered a problem while persisting settings file"), "This looks like a programming error")
@@ -42,14 +30,13 @@ func (s *settingsRepositoryYaml) Store(settings model.Settings) {
 		panic(err)
 	}
 
-	log.Println("storing " + string(data))
 	err = settingsFile.Write(data)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (s *settingsRepositoryYaml) read() model.Settings {
+func (s *yamlSettingsRepository) read() model.Settings {
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
 	var settings model.SettingsYaml
 	content, err := settingsFile.AsBytes()
@@ -63,7 +50,7 @@ func (s *settingsRepositoryYaml) read() model.Settings {
 	return &settings
 }
 
-func (s *settingsRepositoryYaml) init() {
+func (s *yamlSettingsRepository) init() {
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
 	if !settingsFile.Exists() {
 		settingsFile.Create()
