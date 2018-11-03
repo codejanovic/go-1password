@@ -3,7 +3,6 @@ package usecase
 import (
 	"fmt"
 
-	model "github.com/codejanovic/go-1password/model"
 	repository "github.com/codejanovic/go-1password/repository"
 	vault "github.com/codejanovic/go-1password/vault"
 )
@@ -45,25 +44,14 @@ func NewListProfileUsecase() *ListProfileUsecase {
 }
 
 // Execute the usecase
-func (u *ListProfileUsecase) Execute(request *ListProfileRequest) (*ListProfileResponse, error) {
+func (u *ListProfileUsecase) Execute() (*ListProfileResponse, error) {
 	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 
-	var vaultSetting model.VaultSetting
-	if request.VaultAliasOrIdentifier == "" {
-		foundSetting, err := settings.Active()
-		if err != nil {
-			return nil, fmt.Errorf("Unable to find signedin vault. Please signin first or provide a vault alias or identifier")
-		}
-		vaultSetting = foundSetting
-	} else {
-		foundSetting, err := settings.Find(request.VaultAliasOrIdentifier)
-		if err != nil {
-			return nil, fmt.Errorf("Unable to find desired vault with alias or identifier '%s'. Please add your vault in advance and sign in", request.VaultAliasOrIdentifier)
-		}
-		vaultSetting = foundSetting
+	vaultSetting, err := settings.Active()
+	if err != nil {
+		return nil, fmt.Errorf("Unable to find active vault. Please signin first")
 	}
-
 	vault := vault.NewOpVault(vaultSetting.Path())
 	foundProfiles, err := vault.Profiles()
 	if err != nil {

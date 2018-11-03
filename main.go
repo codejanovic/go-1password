@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"os"
@@ -71,7 +72,7 @@ func main() {
 				{
 					Name:      "remove",
 					Usage:     "remove a vault from your configuration",
-					ArgsUsage: "$1{vault identifier|alias}",
+					ArgsUsage: "$0{vault identifier|alias}",
 					Action: func(c *cli.Context) error {
 						usecase.NewRemoveVaultUsecase().Execute(&usecase.RemoveVaultRequest{
 							VaultAliasOrIdentifier: c.Args().Get(0),
@@ -104,13 +105,10 @@ func main() {
 			Usage: "profile options",
 			Subcommands: []cli.Command{
 				{
-					Name:      "list",
-					Usage:     "list all profiles within a vault",
-					ArgsUsage: "$0{vault identifier|alias}",
+					Name:  "list",
+					Usage: "list all profiles within a vault",
 					Action: func(c *cli.Context) error {
-						response, err := usecase.NewListProfileUsecase().Execute(&usecase.ListProfileRequest{
-							VaultAliasOrIdentifier: c.Args().Get(0),
-						})
+						response, err := usecase.NewListProfileUsecase().Execute()
 						if err != nil {
 							return err
 						}
@@ -126,37 +124,47 @@ func main() {
 					},
 				},
 				{
-					Name:  "signin",
-					Usage: "signin {profile name}",
-					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
-				{
-					Name:  "search",
-					Usage: "search for profiles",
-					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
-				{
 					Name:  "inspect",
 					Usage: "inspect profile",
 					Action: func(c *cli.Context) error {
+						response, err := usecase.NewInspectProfileUsecase().Execute()
+						if err != nil {
+							return err
+						}
+						data, err := json.Marshal(response.Profile)
+						if err != nil {
+							return err
+						}
+						log.Println(string(data))
+						return nil
+					},
+				},
+			},
+		},
+		{
+			Name:  "items",
+			Usage: "items options",
+			Subcommands: []cli.Command{
+				{
+					Name:  "list",
+					Usage: "list all items within a profile",
+					Action: func(c *cli.Context) error {
+						return errors.New("not implemented")
+					},
+				},
+				{
+					Name:      "inspect",
+					Usage:     "inspect item",
+					ArgsUsage: "$0{item name}",
+					Action: func(c *cli.Context) error {
 						return nil
 					},
 				},
 				{
-					Name:  "items",
-					Usage: "items",
-					Subcommands: []cli.Command{
-						{
-							Name:  "show",
-							Usage: "show specific item",
-							Action: func(c *cli.Context) error {
-								return nil
-							},
-						},
+					Name:  "password",
+					Usage: "fetch password of a item",
+					Action: func(c *cli.Context) error {
+						return nil
 					},
 				},
 			},
