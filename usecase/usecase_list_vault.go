@@ -8,20 +8,14 @@ import (
 type ListVaultUsecase struct {
 }
 
-// ListVault struct
-type ListVault struct {
-	Alias      string
-	Identifier string
-}
-
 // ListVaultResponse struct
 type ListVaultResponse struct {
-	Found []*ListVault
+	Vaults []*VaultThinModel
 }
 
 //HasVaults returns whether or not vaults have been found
 func (r *ListVaultResponse) HasVaults() bool {
-	return len(r.Found) > 0
+	return len(r.Vaults) > 0
 }
 
 var listVaultSingleton *ListVaultUsecase
@@ -40,14 +34,14 @@ func (u *ListVaultUsecase) Execute() *ListVaultResponse {
 	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 	vaults := settings.Vaults()
-	var found []*ListVault
+	var foundVaults []*VaultThinModel
 	for _, vault := range vaults {
-		found = append(found, &ListVault{
+		foundVaults = append(foundVaults, &VaultThinModel{
 			Alias:      vault.Alias(),
 			Identifier: vault.Identifier(),
 		})
 	}
 	return &ListVaultResponse{
-		Found: found,
+		Vaults: foundVaults,
 	}
 }

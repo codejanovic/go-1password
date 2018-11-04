@@ -16,20 +16,9 @@ type ListProfileRequest struct {
 	VaultAliasOrIdentifier string
 }
 
-// ListProfile struct
-type ListProfile struct {
-	Alias      string
-	Identifier string
-}
-
 // ListProfileResponse struct
 type ListProfileResponse struct {
-	Found []string
-}
-
-//HasVaults returns whether or not vaults have been found
-func (r *ListProfileResponse) HasVaults() bool {
-	return len(r.Found) > 0
+	Profiles []*ProfileNameOnlyModel
 }
 
 var listProfileSingleton *ListProfileUsecase
@@ -58,7 +47,14 @@ func (u *ListProfileUsecase) Execute() (*ListProfileResponse, error) {
 		return nil, err
 	}
 
+	profiles := make([]*ProfileNameOnlyModel, 0)
+	for _, foundProfile := range foundProfiles {
+		profiles = append(profiles, &ProfileNameOnlyModel{
+			Name: foundProfile,
+		})
+	}
+
 	return &ListProfileResponse{
-		Found: foundProfiles,
+		Profiles: profiles,
 	}, nil
 }

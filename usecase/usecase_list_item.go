@@ -8,33 +8,28 @@ import (
 	vault "github.com/codejanovic/go-1password/vault"
 )
 
-// InspectProfileUsecase usecase
-type InspectProfileUsecase struct {
+// ListItemsUsecase usecase
+type ListItemsUsecase struct {
 }
 
-// InspectProfileRequest struct
-type InspectProfileRequest struct {
-	VaultAliasOrIdentifier string
+// ListItemsResponse struct
+type ListItemsResponse struct {
+	Items []*ItemThinModel
 }
 
-// InspectProfileResponse struct
-type InspectProfileResponse struct {
-	Profile *ProfileInspectModel
-}
-
-var inspectProfileSingleton *InspectProfileUsecase
+var listItemsSingleton *ListItemsUsecase
 
 func init() {
-	inspectProfileSingleton = &InspectProfileUsecase{}
+	listItemsSingleton = &ListItemsUsecase{}
 }
 
-// NewInspectProfileUsecase constructor
-func NewInspectProfileUsecase() *InspectProfileUsecase {
-	return inspectProfileSingleton
+// NewListItemsUsecase constructor
+func NewListItemsUsecase() *ListItemsUsecase {
+	return listItemsSingleton
 }
 
 // Execute the usecase
-func (u *InspectProfileUsecase) Execute() (*InspectProfileResponse, error) {
+func (u *ListItemsUsecase) Execute() (*ListItemsResponse, error) {
 	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 	credentialsRepository := repository.NewCredentialsRepository()
@@ -54,18 +49,15 @@ func (u *InspectProfileUsecase) Execute() (*InspectProfileResponse, error) {
 		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
 	}
 
-	inspectItems := make([]*ItemThinModel, 0)
+	listItems := make([]*ItemThinModel, 0)
 	for _, item := range profile.Items() {
-		inspectItems = append(inspectItems, &ItemThinModel{
+		listItems = append(listItems, &ItemThinModel{
 			Name:   item.Name(),
 			Fields: item.FieldSize(),
 		})
 	}
 
-	return &InspectProfileResponse{
-		Profile: &ProfileInspectModel{
-			Name:  profile.Name(),
-			Items: inspectItems,
-		},
+	return &ListItemsResponse{
+		Items: listItems,
 	}, nil
 }

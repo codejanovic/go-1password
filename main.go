@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	usecase "github.com/codejanovic/go-1password/usecase"
@@ -35,21 +34,15 @@ func main() {
 					ArgsUsage: "no arguments",
 					Action: func(c *cli.Context) error {
 						response := usecase.NewListVaultUsecase().Execute()
-						var output strings.Builder
 						if !response.HasVaults() {
-							return errors.New("there are no vaults configured")
+							return errors.New("no configured vaults found")
 						}
 
-						for i, found := range response.Found {
-							if i > 0 {
-								output.WriteString(", ")
-							}
-							output.WriteString("[ ")
-							output.WriteString("id=" + found.Identifier)
-							output.WriteString(", alias=" + found.Alias)
-							output.WriteString(" ]")
+						data, err := json.Marshal(response.Vaults)
+						if err != nil {
+							return err
 						}
-						log.Println(output.String())
+						log.Println(string(data))
 						return nil
 					},
 				},
@@ -65,7 +58,11 @@ func main() {
 						if err != nil {
 							return err
 						}
-						log.Printf("successfully added vault '%s' (%s)", response.Added.Alias(), response.Added.Path())
+						data, err := json.Marshal(response.Vault)
+						if err != nil {
+							return err
+						}
+						log.Println("successfully added vault " + string(data))
 						return nil
 					},
 				},
@@ -112,14 +109,11 @@ func main() {
 						if err != nil {
 							return err
 						}
-						var output strings.Builder
-						for i, profile := range response.Found {
-							if i > 0 {
-								output.WriteString(", ")
-							}
-							output.WriteString(profile)
+						data, err := json.Marshal(response.Profiles)
+						if err != nil {
+							return err
 						}
-						log.Println("profiles found: " + output.String())
+						log.Println(string(data))
 						return nil
 					},
 				},
@@ -142,14 +136,23 @@ func main() {
 			},
 		},
 		{
-			Name:  "items",
-			Usage: "items options",
+			Name:  "item",
+			Usage: "item options",
 			Subcommands: []cli.Command{
 				{
 					Name:  "list",
 					Usage: "list all items within a profile",
 					Action: func(c *cli.Context) error {
-						return errors.New("not implemented")
+						response, err := usecase.NewListItemsUsecase().Execute()
+						if err != nil {
+							return err
+						}
+						data, err := json.Marshal(response.Items)
+						if err != nil {
+							return err
+						}
+						log.Println(string(data))
+						return nil
 					},
 				},
 				{
@@ -157,6 +160,17 @@ func main() {
 					Usage:     "inspect item",
 					ArgsUsage: "$0{item name}",
 					Action: func(c *cli.Context) error {
+						response, err := usecase.NewInspectItemUsecase().Execute(&usecase.InspectItemRequest{
+							ItemName: c.Args().Get(0),
+						})
+						if err != nil {
+							return err
+						}
+						data, err := json.Marshal(response.Item)
+						if err != nil {
+							return err
+						}
+						log.Println(string(data))
 						return nil
 					},
 				},

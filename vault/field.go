@@ -7,6 +7,9 @@ import (
 // Field interface
 type Field interface {
 	Name() string
+	Value() string
+	IsPassword() bool
+	IsEmail() bool
 }
 
 type opVaultField struct {
@@ -21,4 +24,16 @@ func newOpVaultField(field *opvault.Field) Field {
 
 func (f *opVaultField) Name() string {
 	return f.fieldInternal.Name()
+}
+
+func (f *opVaultField) IsPassword() bool {
+	return f.fieldInternal.Type() == opvault.PasswordFieldType
+}
+
+func (f *opVaultField) IsEmail() bool {
+	return f.fieldInternal.Type() == opvault.EmailFieldType
+}
+
+func (f *opVaultField) Value() string {
+	return f.fieldInternal.Value()
 }

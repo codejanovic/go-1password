@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	io "github.com/codejanovic/go-1password/io"
-	"github.com/codejanovic/go-1password/model"
 	repository "github.com/codejanovic/go-1password/repository"
 )
 
@@ -21,7 +20,7 @@ type AddVaultRequest struct {
 
 // AddVaultResponse struct
 type AddVaultResponse struct {
-	Added model.VaultSetting
+	Vault *VaultThinModel
 }
 
 var addVaultSingleton *AddVaultUsecase
@@ -62,7 +61,10 @@ func (u *AddVaultUsecase) Execute(request *AddVaultRequest) (*AddVaultResponse, 
 	settingsRepository.Store(settings)
 
 	return &AddVaultResponse{
-		Added: vaultSetting,
+		Vault: &VaultThinModel{
+			Alias:      vaultSetting.Alias(),
+			Identifier: vaultSetting.Identifier(),
+		},
 	}, nil
 }
 
