@@ -37,14 +37,7 @@ func (u *ListProfileUsecase) Execute() (*ListProfileResponse, error) {
 		return nil, err
 	}
 
-	profiles := make([]*ProfileNameOnlyModel, 0)
-	for _, foundProfile := range foundProfiles {
-		profiles = append(profiles, &ProfileNameOnlyModel{
-			Name: foundProfile,
-		})
-	}
-
 	return &ListProfileResponse{
-		Profiles: profiles,
+		Profiles: toProfileNameOnlyModels(foundProfiles),
 	}, nil
 }

@@ -33,15 +33,9 @@ func NewListVaultUsecase() *ListVaultUsecase {
 func (u *ListVaultUsecase) Execute() *ListVaultResponse {
 	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
-	vaults := settings.Vaults()
-	var foundVaults []*VaultThinModel
-	for _, vault := range vaults {
-		foundVaults = append(foundVaults, &VaultThinModel{
-			Alias:      vault.Alias(),
-			Identifier: vault.Identifier(),
-		})
-	}
+	vaultSettings := settings.Vaults()
+
 	return &ListVaultResponse{
-		Vaults: foundVaults,
+		Vaults: toVaultThinModels(vaultSettings),
 	}
 }

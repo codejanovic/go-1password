@@ -36,18 +36,7 @@ func (u *InspectProfileUsecase) Execute() (*InspectProfileResponse, error) {
 		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
 	}
 
-	inspectItems := make([]*ItemThinModel, 0)
-	for _, item := range profile.Items() {
-		inspectItems = append(inspectItems, &ItemThinModel{
-			Name:   item.Name(),
-			Fields: item.FieldSize(),
-		})
-	}
-
 	return &InspectProfileResponse{
-		Profile: &ProfileInspectModel{
-			Name:  profile.Name(),
-			Items: inspectItems,
-		},
+		Profile: toProfileInspectModel(profile),
 	}, nil
 }

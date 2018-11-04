@@ -43,20 +43,10 @@ func (u *InspectItemUsecase) Execute(request *InspectItemRequest) (*InspectItemR
 	}
 
 	var inspectItem *ItemInspectModel
-	inspectFields := make([]*FieldInspectModel, 0)
 	for _, item := range profile.Items() {
 		if strings.EqualFold(item.Name(), request.ItemName) {
-			for _, field := range item.Fields() {
-				inspectFields = append(inspectFields, &FieldInspectModel{
-					Name:       field.Name(),
-					Value:      field.Value(),
-					IsPassword: field.IsPassword(),
-				})
-			}
-			inspectItem = &ItemInspectModel{
-				Name:   item.Name(),
-				Fields: inspectFields,
-			}
+			inspectItem = toItemInspectModel(item)
+			break
 		}
 	}
 
