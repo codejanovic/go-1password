@@ -174,13 +174,6 @@ func main() {
 						return nil
 					},
 				},
-				{
-					Name:  "password",
-					Usage: "fetch password of a item",
-					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
 			},
 		},
 	}
