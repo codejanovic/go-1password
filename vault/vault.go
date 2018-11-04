@@ -3,7 +3,7 @@ package vault
 import (
 	"errors"
 
-	throw "github.com/codejanovic/go-1password/throw"
+	fatal "github.com/codejanovic/go-1password/fatal"
 	"github.com/vinc3m1/opvault"
 )
 
@@ -22,7 +22,7 @@ type opVault struct {
 func NewOpVault(path string) Vault {
 	openedVault, err := opvault.Open(path)
 	if err != nil {
-		throw.Throw(err, "Unable to open opvault at "+path)
+		fatal.Crash(err, "Unable to open opvault at "+path)
 	}
 
 	return &opVault{

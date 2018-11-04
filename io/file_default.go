@@ -7,7 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
-	throw "github.com/codejanovic/go-1password/throw"
+	fatal "github.com/codejanovic/go-1password/fatal"
 )
 
 // FileByPath implementing File interface
@@ -20,7 +20,7 @@ func NewFileByAbsolutePath(path string) File {
 	file := new(FileByPath)
 	absolutePath, err := filepath.Abs(path)
 	if err != nil {
-		throw.Throw(fmt.Errorf("Unable to create absolute path for %s", path), "Maybe the path is incorrect, or the opvault does not exist?")
+		fatal.Crash(fmt.Errorf("Unable to create absolute path for %s", path), "Maybe the path is incorrect, or the opvault does not exist?")
 	}
 	file.path = absolutePath
 	return file

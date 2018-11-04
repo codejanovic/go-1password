@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	environment "github.com/codejanovic/go-1password/environment"
+	fatal "github.com/codejanovic/go-1password/fatal"
 	io "github.com/codejanovic/go-1password/io"
 	model "github.com/codejanovic/go-1password/model"
-	throw "github.com/codejanovic/go-1password/throw"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -21,7 +21,7 @@ func (s *yamlSettingsRepository) Fetch() model.Settings {
 func (s *yamlSettingsRepository) Store(settings model.Settings) {
 	yamlSettings, ok := settings.(*model.SettingsYaml)
 	if !ok {
-		throw.Throw(fmt.Errorf("We encountered a problem while persisting settings file"), "This looks like a programming error")
+		fatal.Crash(fmt.Errorf("We encountered a problem while persisting settings file"), "This looks like a programming error")
 	}
 
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
@@ -41,11 +41,11 @@ func (s *yamlSettingsRepository) read() model.Settings {
 	var settings model.SettingsYaml
 	content, err := settingsFile.AsBytes()
 	if err != nil {
-		throw.Throw(err, "Error reading settings file")
+		fatal.Crash(err, "Error reading settings file")
 	}
 	err = yaml.Unmarshal(content, &settings)
 	if err != nil {
-		throw.Throw(err, "Error interpreting settings file")
+		fatal.Crash(err, "Error interpreting settings file")
 	}
 	return &settings
 }

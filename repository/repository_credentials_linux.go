@@ -1,7 +1,7 @@
 package repository
 
 import (
-	throw "github.com/codejanovic/go-1password/throw"
+	"github.com/codejanovic/go-1password/fatal"
 	"github.com/docker/docker-credential-helpers/credentials"
 	"github.com/docker/docker-credential-helpers/secretservice"
 )
@@ -28,7 +28,7 @@ func (r *linuxCredentialsRepository) Store(identifier string, secret string) {
 	})
 
 	if err != nil {
-		throw.Throw(err, "Unable to access credentials store")
+		fatal.Crash(err, "Unable to access credentials store")
 	}
 }
 
@@ -45,6 +45,6 @@ func (r *linuxCredentialsRepository) Fetch(identifier string) (string, bool) {
 func (r *linuxCredentialsRepository) Remove(identifier string) {
 	err := r.nativeStore.Delete(identifier)
 	if err != nil {
-		throw.Throw(err, "Unable to access credentials store")
+		fatal.Crash(err, "Unable to access credentials store")
 	}
 }

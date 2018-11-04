@@ -1,7 +1,7 @@
 package vault
 
 import (
-	throw "github.com/codejanovic/go-1password/throw"
+	fatal "github.com/codejanovic/go-1password/fatal"
 	"github.com/vinc3m1/opvault"
 )
 
@@ -20,7 +20,7 @@ type opVaultItem struct {
 func newOpVaultItem(originalItem *opvault.Item) Item {
 	originalDetail, err := originalItem.Detail()
 	if err != nil {
-		throw.Throw(err, "Unable to fetch item details")
+		fatal.Crash(err, "Unable to fetch item details")
 	}
 
 	fields := make([]Field, 0)

@@ -1,7 +1,7 @@
 package vault
 
 import (
-	throw "github.com/codejanovic/go-1password/throw"
+	fatal "github.com/codejanovic/go-1password/fatal"
 	"github.com/vinc3m1/opvault"
 )
 
@@ -20,7 +20,7 @@ type opVaultProfile struct {
 func newOpVaultProfile(originalProfile *opvault.Profile) Profile {
 	originalItems, err := originalProfile.Items()
 	if err != nil {
-		throw.Throw(err, "Unable to fetch items from profile")
+		fatal.Crash(err, "Unable to fetch items from profile")
 	}
 
 	items := make([]Item, 0)
