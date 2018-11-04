@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"time"
 
 	usecase "github.com/codejanovic/go-1password/usecase"
 	"github.com/urfave/cli"
@@ -13,16 +14,18 @@ import (
 var (
 	version = "dev"
 	commit  = "none"
-	date    = "unknown"
-	app     = "go-1password"
+	date    = "2006-01-02T15:04:05"
+	appName = "go-1password"
 )
 
 func main() {
+	versionDate, _ := time.Parse("2006-01-02T15:04:05", date)
 	app := cli.NewApp()
-	app.Name = app
+	app.Name = appName
 	app.Usage = "cli for interacting with local opvault vaults"
 	app.Version = version
-	app.Compiled = date
+	app.Description = commit
+	app.Compiled = versionDate
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "codejanovic",

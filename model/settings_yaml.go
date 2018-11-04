@@ -3,7 +3,7 @@ package model
 import (
 	"errors"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/gofrs/uuid"
 )
 
 // SettingsYaml in yaml

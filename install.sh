@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-go get -v -t github.com/satori/go.uuid
+go get -v -t github.com/gofrs/uuid
 go get -v -t github.com/go-yaml/yaml
 go get -v -t github.com/urfave/cli
 go get -v -t github.com/vinc3m1/opvault
