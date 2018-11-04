@@ -13,19 +13,15 @@ import (
 
 var (
 	version = "dev"
-	commit  = "none"
-	date    = "2006-01-02T15:04:05"
 	appName = "go-1password"
 )
 
 func main() {
-	versionDate, _ := time.Parse("2006-01-02T15:04:05", date)
 	app := cli.NewApp()
 	app.Name = appName
 	app.Usage = "cli for interacting with local opvault vaults"
 	app.Version = version
-	app.Description = commit
-	app.Compiled = versionDate
+	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "codejanovic",
