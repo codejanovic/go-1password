@@ -1,0 +1,27 @@
+image: Visual Studio 2015
+
+# appveyor.yml
+build: off
+
+clone_folder: c:\gopath\src\github.com\codejanovic\go-1password
+clone_depth: 10
+
+environment:
+  GOPATH: c:\gopath
+
+stack: go 1.11.2
+
+before_test:
+  - go get -t -v ./...
+
+test_script:
+  - go test ./...
+
+before_build: 
+  - go get -t -v ./...
+  
+build_script:
+  - go build -a -installsuffix cgo -o bin/go-1password.exe .
+
+artifacts:
+  - path: bin/go-1password.exe

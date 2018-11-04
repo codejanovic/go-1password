@@ -1,1 +1,1 @@
-go build -a -installsuffix cgo -o go-1password.exe .
+go build -a -installsuffix cgo -o bin/go-1password.exe .
