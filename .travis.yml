@@ -1,0 +1,27 @@
+sudo: required
+language: go
+dist: trusty
+osx_image: xcode9
+os:
+  - linux
+  - osx
+
+go:  
+  - 1.11.2
+
+notifications:
+  email: false
+
+addons:
+    apt:
+      packages:
+        - libsecret-1-dev
+        - pass
+
+before_script:
+  - go get -t ./...
+  - go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
+
+script:
+  - golangci-lint run       # run a bunch of code checkers/linters in parallel
+  - go test -v -race ./...  # Run all the tests with the race detector enabled
