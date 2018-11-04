@@ -1,11 +1,7 @@
 package usecase
 
 import (
-	"errors"
 	"fmt"
-
-	repository "github.com/codejanovic/go-1password/repository"
-	vault "github.com/codejanovic/go-1password/vault"
 )
 
 // InspectProfileUsecase usecase
@@ -35,21 +31,7 @@ func NewInspectProfileUsecase() *InspectProfileUsecase {
 
 // Execute the usecase
 func (u *InspectProfileUsecase) Execute() (*InspectProfileResponse, error) {
-	settingsRepository := repository.NewSettingsRepository()
-	settings := settingsRepository.Fetch()
-	credentialsRepository := repository.NewCredentialsRepository()
-
-	vaultSetting, err := settings.Active()
-	if err != nil {
-		return nil, fmt.Errorf("Unable to find active vault. Please signin first")
-	}
-	secret, found := credentialsRepository.Fetch(vaultSetting.Identifier())
-	if !found {
-		return nil, errors.New("Unable to find credentials. Make sure to sign first")
-	}
-
-	vault := vault.NewOpVault(vaultSetting.Path())
-	profile, err := vault.OpenProfile(vaultSetting.Profile(), secret)
+	profile, err := requiresActiveProfile()
 	if err != nil {
 		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
 	}

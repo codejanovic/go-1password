@@ -1,12 +1,5 @@
 package usecase
 
-import (
-	"fmt"
-
-	repository "github.com/codejanovic/go-1password/repository"
-	vault "github.com/codejanovic/go-1password/vault"
-)
-
 // ListProfileUsecase usecase
 type ListProfileUsecase struct {
 }
@@ -34,14 +27,11 @@ func NewListProfileUsecase() *ListProfileUsecase {
 
 // Execute the usecase
 func (u *ListProfileUsecase) Execute() (*ListProfileResponse, error) {
-	settingsRepository := repository.NewSettingsRepository()
-	settings := settingsRepository.Fetch()
-
-	vaultSetting, err := settings.Active()
+	vault, err := requiresActiveVault()
 	if err != nil {
-		return nil, fmt.Errorf("Unable to find active vault. Please signin first")
+		return nil, err
 	}
-	vault := vault.NewOpVault(vaultSetting.Path())
+
 	foundProfiles, err := vault.Profiles()
 	if err != nil {
 		return nil, err
