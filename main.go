@@ -71,9 +71,12 @@ func main() {
 					Usage:     "remove a vault from your configuration",
 					ArgsUsage: "$0{vault identifier|alias}",
 					Action: func(c *cli.Context) error {
-						usecase.NewRemoveVaultUsecase().Execute(&usecase.RemoveVaultRequest{
+						err := usecase.NewRemoveVaultUsecase().Execute(&usecase.RemoveVaultRequest{
 							VaultAliasOrIdentifier: c.Args().Get(0),
 						})
+						if err != nil {
+							return err
+						}
 						log.Printf("successfully removed vault '%s'", c.Args().Get(0))
 						return nil
 					},

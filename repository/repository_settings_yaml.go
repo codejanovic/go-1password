@@ -53,6 +53,9 @@ func (s *yamlSettingsRepository) read() model.Settings {
 func (s *yamlSettingsRepository) init() {
 	settingsFile := io.NewFileByPath(environment.Environment.SettingsFile)
 	if !settingsFile.Exists() {
-		settingsFile.Create()
+		err := settingsFile.Create()
+		if err != nil {
+			fatal.Crash(err, "Unable to create required settings file")
+		}
 	}
 }

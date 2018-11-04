@@ -56,7 +56,10 @@ func (f *FileByPath) Exists() bool {
 
 // Create empty file if it does not exist
 func (f *FileByPath) Create() error {
-	os.MkdirAll(path.Dir(f.path), os.ModePerm)
+	err := os.MkdirAll(path.Dir(f.path), os.ModePerm)
+	if err != nil {
+		return err
+	}
 	file, err := os.Create(f.path)
 	if err != nil {
 		return err
