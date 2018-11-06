@@ -7,10 +7,6 @@ import (
 
 func init() {
 	vaultCmd.AddCommand(removeVaultCmd)
-	removeVaultCmd.Flags().StringP("file", "f", "", "provide a valid path to your opvault")
-	removeVaultCmd.Flags().StringP("alias", "a", "", "provide a unique vault alias")
-	removeVaultCmd.MarkFlagRequired("file")
-	removeVaultCmd.MarkFlagRequired("alias")
 }
 
 var removeVaultCmd = &cobra.Command{

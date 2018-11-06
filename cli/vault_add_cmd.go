@@ -2,6 +2,7 @@ package cli
 
 import (
 	"encoding/json"
+	"github.com/codejanovic/go-1password/fatal"
 	"github.com/codejanovic/go-1password/usecase"
 	"github.com/spf13/cobra"
 )
@@ -10,8 +11,14 @@ func init() {
 	vaultCmd.AddCommand(addVaultCmd)
 	addVaultCmd.Flags().StringP("file", "f", "", "provide a valid path to your opvault")
 	addVaultCmd.Flags().StringP("alias", "a", "", "provide a unique vault alias")
-	addVaultCmd.MarkFlagRequired("file")
-	addVaultCmd.MarkFlagRequired("alias")
+	err := addVaultCmd.MarkFlagRequired("file")
+	if err != nil {
+		fatal.Crash(err, "")
+	}
+	err = addVaultCmd.MarkFlagRequired("alias")
+	if err != nil {
+		fatal.Crash(err, "")
+	}
 }
 
 var addVaultCmd = &cobra.Command{
