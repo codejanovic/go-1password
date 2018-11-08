@@ -8,3 +8,4 @@ go get -v -t github.com/docker/docker-credential-helpers/secretservice
 go get -v -t github.com/docker/docker-credential-helpers/osxkeychain
 go get -v -t github.com/docker/docker-credential-helpers/wincred
 go get -v -t github.com/spf13/cobra
+go get -v -t github.com/tcnksm/go-input
