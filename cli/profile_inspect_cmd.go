@@ -2,7 +2,7 @@ package cli
 
 import (
 	"encoding/json"
-	"github.com/codejanovic/go-1password/usecase"
+	"github.com/codejanovic/gordon/usecase"
 	"github.com/spf13/cobra"
 )
 

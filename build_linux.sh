@@ -1,1 +1,1 @@
-go build -a -o bin/go-1password .
+go build -a -o bin/gordon .

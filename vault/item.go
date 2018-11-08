@@ -1,7 +1,7 @@
 package vault
 
 import (
-	fatal "github.com/codejanovic/go-1password/fatal"
+	"github.com/codejanovic/gordon/fatal"
 	"github.com/vinc3m1/opvault"
 )
 

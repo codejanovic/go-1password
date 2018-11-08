@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	repository "github.com/codejanovic/go-1password/repository"
+	"github.com/codejanovic/gordon/repository"
 )
 
 // ListVaultUsecase usecase

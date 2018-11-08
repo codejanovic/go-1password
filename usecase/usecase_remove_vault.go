@@ -1,6 +1,6 @@
 package usecase
 
-import repository "github.com/codejanovic/go-1password/repository"
+import "github.com/codejanovic/gordon/repository"
 
 // RemoveVaultUsecase usecase
 type RemoveVaultUsecase struct {

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	model "github.com/codejanovic/go-1password/model"
+	"github.com/codejanovic/gordon/model"
 )
 
 // SettingsRepository interface

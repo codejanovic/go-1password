@@ -3,7 +3,7 @@ image: Visual Studio 2015
 # appveyor.yml
 build: off
 
-clone_folder: c:\gopath\src\github.com\codejanovic\go-1password
+clone_folder: c:\gopath\src\github.com\codejanovic\gordon
 clone_depth: 10
 
 environment:
@@ -21,7 +21,7 @@ before_build:
   - go get -t -v ./...
   
 build_script:
-  - go build -a -installsuffix cgo -o bin/go-1password.exe .
+- go build -a -installsuffix cgo -o bin/gordon.exe .
 
 artifacts:
-  - path: bin/go-1password.exe
+- path: bin/gordon.exe

@@ -34,7 +34,7 @@ deploy:
   api_key: $GITHUB_TOKEN
   file_glob: true
   file:
-    - "go-1password*.tar.gz"    
+  - "gordon*.tar.gz"
   skip_cleanup: true
   on:
     tags: true

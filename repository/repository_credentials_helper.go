@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/codejanovic/go-1password/fatal"
+	"github.com/codejanovic/gordon/fatal"
 	"github.com/docker/docker-credential-helpers/credentials"
 )
 

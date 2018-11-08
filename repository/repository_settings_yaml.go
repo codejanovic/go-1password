@@ -3,11 +3,11 @@ package repository
 import (
 	"fmt"
 
-	environment "github.com/codejanovic/go-1password/environment"
-	fatal "github.com/codejanovic/go-1password/fatal"
-	io "github.com/codejanovic/go-1password/io"
-	model "github.com/codejanovic/go-1password/model"
-	yaml "gopkg.in/yaml.v2"
+	"github.com/codejanovic/gordon/environment"
+	"github.com/codejanovic/gordon/fatal"
+	"github.com/codejanovic/gordon/io"
+	"github.com/codejanovic/gordon/model"
+	"gopkg.in/yaml.v2"
 )
 
 type yamlSettingsRepository struct {

@@ -7,7 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
-	fatal "github.com/codejanovic/go-1password/fatal"
+	"github.com/codejanovic/gordon/fatal"
 )
 
 // FileByPath implementing File interface

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/codejanovic/go-1password/model"
-	"github.com/codejanovic/go-1password/vault"
+	"github.com/codejanovic/gordon/model"
+	"github.com/codejanovic/gordon/vault"
 )
 
 // ItemInspectModel struct

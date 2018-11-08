@@ -26,12 +26,12 @@ func init() {
 		panic("Unable to initialize environment, something went really wrong...")
 	}
 
-	appDir := path.Join(userDir, ".go-1password")
+	appDir := path.Join(userDir, ".gordon")
 
 	env := &environment{
-		ProjectName:    "go-1password",
+		ProjectName:    "gordon",
 		ProjectVersion: "0.1.0",
-		ProjectUrl:     "http://github.com/codejanovic/go-1password/",
+		ProjectUrl:     "http://github.com/codejanovic/gordon/",
 		UserDirectory:  userDir,
 		AppDirectory:   appDir,
 		SettingsFile:   path.Join(appDir, "settings.yaml"),

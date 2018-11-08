@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	repository "github.com/codejanovic/go-1password/repository"
-	vault "github.com/codejanovic/go-1password/vault"
+	"github.com/codejanovic/gordon/repository"
+	"github.com/codejanovic/gordon/vault"
 )
 
 // SignInVaultUsecase usecase

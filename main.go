@@ -1,7 +1,7 @@
 package main
 
 import (
-	cmd "github.com/codejanovic/go-1password/cli"
+	cmd "github.com/codejanovic/gordon/cli"
 )
 
 func main() {
