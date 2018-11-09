@@ -45,12 +45,12 @@ func (u *AddVaultUsecase) Execute(request *AddVaultRequest) (*AddVaultResponse, 
 
 	_, err = settings.Find(request.VaultAlias)
 	if err == nil {
-		return nil, fmt.Errorf("Please provide a unique vault alias. There is already a vault registered with alias '%s'", request.VaultAlias)
+		return nil, fmt.Errorf("oops, there is already a vault registered with alias '%s'", request.VaultAlias)
 	}
 
 	vaultFile := io.NewFileByAbsolutePath(request.VaultPath)
 	if !vaultFile.Exists() {
-		return nil, fmt.Errorf("Please provide a valid vault path. It looks like the vault does not exists under path '%s'", request.VaultPath)
+		return nil, fmt.Errorf("oops, it looks like the vault does not exists under path '%s'", request.VaultPath)
 	}
 
 	vaultSetting, err := settings.Add(vaultFile.Path(), request.VaultAlias)

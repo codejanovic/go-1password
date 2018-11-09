@@ -11,23 +11,32 @@ import (
 type Vault interface {
 	TryOpenProfile(name string, secret string) bool
 	OpenProfile(name string, secret string) (Profile, error)
+	OpenDefaultProfile(secret string) (Profile, error)
 	Profiles() ([]string, error)
+	HasDefaultProfile() bool
 }
 
 type opVault struct {
-	vault *opvault.Vault
+	vault   *opvault.Vault
+	profile string
 }
 
 // NewOpVault constructor
-func NewOpVault(path string) Vault {
+func NewOpVault(path string, defaultProfile string) Vault {
 	openedVault, err := opvault.Open(path)
 	if err != nil {
-		fatal.Crash(err, "Unable to open opvault at "+path)
+		fatal.Crash(err, "unable to open opvault at "+path)
 	}
 
 	return &opVault{
-		vault: openedVault,
+		vault:   openedVault,
+		profile: defaultProfile,
 	}
+}
+
+// HasDefaultProfile
+func (v *opVault) HasDefaultProfile() bool {
+	return v.profile != ""
 }
 
 // TryOpen method
@@ -43,6 +52,11 @@ func (v *opVault) Profiles() ([]string, error) {
 		return nil, errors.New("Unable to fetch profiles from vault. Reason: " + err.Error())
 	}
 	return names, nil
+}
+
+// OpenDefaultProfile method
+func (v *opVault) OpenDefaultProfile(secret string) (Profile, error) {
+	return v.OpenProfile(v.profile, secret)
 }
 
 // OpenProfile method

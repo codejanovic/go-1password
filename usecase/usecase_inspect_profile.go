@@ -10,7 +10,8 @@ type InspectProfileUsecase struct {
 
 // InspectProfileRequest struct
 type InspectProfileRequest struct {
-	VaultAliasOrIdentifier string
+	AlternativeVault   string
+	AlternativeProfile string
 }
 
 // InspectProfileResponse struct
@@ -30,10 +31,10 @@ func NewInspectProfileUsecase() *InspectProfileUsecase {
 }
 
 // Execute the usecase
-func (u *InspectProfileUsecase) Execute() (*InspectProfileResponse, error) {
-	profile, err := requiresActiveProfile()
+func (u *InspectProfileUsecase) Execute(request *InspectProfileRequest) (*InspectProfileResponse, error) {
+	profile, err := requireActiveOrAlternativeProfile(request.AlternativeVault, request.AlternativeProfile)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
+		return nil, fmt.Errorf("unable to open vault profile. did you sign in into a default vault and profile? ")
 	}
 
 	return &InspectProfileResponse{

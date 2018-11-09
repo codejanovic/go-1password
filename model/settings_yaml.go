@@ -2,8 +2,9 @@ package model
 
 import (
 	"errors"
+	"fmt"
 
-	uuid "github.com/gofrs/uuid"
+	"github.com/gofrs/uuid"
 )
 
 // SettingsYaml in yaml
@@ -28,6 +29,24 @@ func (s *SettingsYaml) Vaults() []VaultSetting {
 		vaultSettings[i] = v
 	}
 	return vaultSettings
+}
+
+// Active returning configured vaults
+func (s *SettingsYaml) ActiveOrAlternative(altIdentifierOrAlias string) (VaultSetting, error) {
+	var foundVaultSetting VaultSetting
+	var err error
+	if altIdentifierOrAlias == "" {
+		foundVaultSetting, err = s.Active()
+		if err != nil {
+			return nil, fmt.Errorf("unable to find active vault. did you sign in into a default vault and profile? ")
+		}
+	} else {
+		foundVaultSetting, err = s.Find(altIdentifierOrAlias)
+		if err != nil {
+			return nil, fmt.Errorf("unable to find vault %s. did you configure this vault in advance? ", altIdentifierOrAlias)
+		}
+	}
+	return foundVaultSetting, nil
 }
 
 // Active returning configured vaults

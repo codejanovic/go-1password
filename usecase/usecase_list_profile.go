@@ -6,7 +6,7 @@ type ListProfileUsecase struct {
 
 // ListProfileRequest struct
 type ListProfileRequest struct {
-	VaultAliasOrIdentifier string
+	AlternativeVault string
 }
 
 // ListProfileResponse struct
@@ -26,8 +26,8 @@ func NewListProfileUsecase() *ListProfileUsecase {
 }
 
 // Execute the usecase
-func (u *ListProfileUsecase) Execute() (*ListProfileResponse, error) {
-	vault, err := requiresActiveVault()
+func (u *ListProfileUsecase) Execute(request *ListProfileRequest) (*ListProfileResponse, error) {
+	vault, _, err := requireActiveOrAlternativeVault(request.AlternativeVault)
 	if err != nil {
 		return nil, err
 	}

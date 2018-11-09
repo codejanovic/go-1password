@@ -7,18 +7,17 @@ import (
 
 func init() {
 	vaultCmd.AddCommand(signinVaultCmd)
-	addVaultCmd.Flags().StringP("secret", "s", "", "provide a vault secret to open the vault")
-	addVaultCmd.Flags().StringP("profile", "p", "", "provide a profile to signin")
+	addVaultCmd.Flags().StringP("secret", "s", "", "secret to open the vault/profile")
 }
 
 var signinVaultCmd = &cobra.Command{
-	Use:   "signin",
-	Short: "sign into a vault",
-	Args:  cobra.MinimumNArgs(1),
+	Use:   "signin [alias|identifier] [profile]",
+	Short: "sign into a vault profile by default",
+	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		err := usecase.NewSignInVaultUsecase().Execute(&usecase.SignInVaultRequest{
 			VaultAliasOrIdentifier: args[0],
-			VaultProfile:           cmd.Flag("profile").Value.String(),
+			VaultProfile:           args[1],
 			VaultSecret:            cmd.Flag("secret").Value.String(),
 		})
 		if err != nil {

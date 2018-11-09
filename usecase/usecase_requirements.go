@@ -1,43 +1,97 @@
 package usecase
 
 import (
-	"errors"
 	"fmt"
 
+	"github.com/codejanovic/gordon/model"
+
+	interaction "github.com/codejanovic/gordon/interaction"
 	"github.com/codejanovic/gordon/repository"
 	"github.com/codejanovic/gordon/vault"
 )
 
-func requiresActiveVault() (vault.Vault, error) {
+func requireActiveOrAlternativeVault(alternativeVault string) (vault.Vault, model.VaultSetting, error) {
 	settingsRepository := repository.NewSettingsRepository()
 	settings := settingsRepository.Fetch()
 
-	vaultSetting, err := settings.Active()
+	vaultSetting, err := settings.ActiveOrAlternative(alternativeVault)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to find active vault. Please signin first")
+		return nil, nil, err
 	}
-	vault := vault.NewOpVault(vaultSetting.Path())
-	return vault, nil
+
+	foundVault := vault.NewOpVault(vaultSetting.Path(), vaultSetting.Profile())
+	return foundVault, vaultSetting, nil
 }
 
-func requiresActiveProfile() (vault.Profile, error) {
-	settingsRepository := repository.NewSettingsRepository()
-	settings := settingsRepository.Fetch()
+func requireActiveOrAlternativeProfile(alternativeVault string, alternativeProfile string) (vault.Profile, error) {
 	credentialsRepository := repository.NewCredentialsRepository()
 
-	vaultSetting, err := settings.Active()
+	foundVault, foundVaultSetting, err := requireActiveOrAlternativeVault(alternativeVault)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to find active vault. Make sure to sign first")
-	}
-	secret, found := credentialsRepository.Fetch(vaultSetting.Identifier())
-	if !found {
-		return nil, errors.New("Unable to find credentials. Make sure to sign first")
+		return nil, fmt.Errorf("unable to find active vault. did you sign in into a default vault and profile? ")
 	}
 
-	vault := vault.NewOpVault(vaultSetting.Path())
-	profile, err := vault.OpenProfile(vaultSetting.Profile(), secret)
-	if err != nil {
-		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
+	if alternativeProfile == "" {
+		if !foundVault.HasDefaultProfile() {
+			return nil, fmt.Errorf("unable to open vault profile. did you sign in into a default vault and profile? ")
+		}
+		foundProfile, err := requiresOpenedProfile(
+			func(secret string) (vault.Profile, error) {
+				return foundVault.OpenDefaultProfile(secret)
+			},
+			func() (string, bool) {
+				return credentialsRepository.Fetch(foundVaultSetting.Identifier())
+			},
+			func(secret string) {
+				credentialsRepository.Store(foundVaultSetting.Identifier(), secret)
+			})
+
+		if err != nil {
+			return nil, err
+		}
+		return foundProfile, nil
+
 	}
-	return profile, nil
+
+	foundProfile, err := requiresOpenedProfile(
+		func(secret string) (vault.Profile, error) {
+			return foundVault.OpenProfile(alternativeProfile, secret)
+		},
+		func() (string, bool) {
+			return credentialsRepository.Fetch(foundVaultSetting.Identifier())
+		},
+		func(secret string) {
+			credentialsRepository.Store(foundVaultSetting.Identifier(), secret)
+		})
+
+	return foundProfile, err
+}
+
+func requiresOpenedProfile(login func(secret string) (vault.Profile, error), fetchSecret func() (string, bool), storeSecret func(secret string)) (vault.Profile, error) {
+	secretFromCredentialStore, found := fetchSecret()
+	var profile vault.Profile
+	var err error
+	if found {
+		profile, err = login(secretFromCredentialStore)
+		if err == nil {
+			return profile, nil
+		}
+	}
+
+	for i := 0; i < 3; i++ {
+		interaction := interaction.NewConsoleInteraction()
+		secretFromUser, err := interaction.AskForVaultPassword()
+		if err != nil {
+			continue
+		}
+		profile, err = login(secretFromUser)
+		if err != nil {
+			continue
+		}
+
+		storeSecret(secretFromUser)
+		return profile, nil
+	}
+
+	return nil, fmt.Errorf("unable to open vault profile. did you provide the correct secret? ")
 }

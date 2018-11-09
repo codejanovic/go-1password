@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+
 	e "github.com/codejanovic/gordon/environment"
 
 	"github.com/spf13/cobra"

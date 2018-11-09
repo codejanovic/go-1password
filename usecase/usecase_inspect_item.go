@@ -12,7 +12,9 @@ type InspectItemUsecase struct {
 
 // InspectItemRequest struct
 type InspectItemRequest struct {
-	ItemName string
+	ItemName           string
+	AlternativeVault   string
+	AlternativeProfile string
 }
 
 // InspectItemResponse struct
@@ -37,7 +39,7 @@ func (u *InspectItemUsecase) Execute(request *InspectItemRequest) (*InspectItemR
 		return nil, errors.New("Please provide a item name you want to inspect")
 	}
 
-	profile, err := requiresActiveProfile()
+	profile, err := requireActiveOrAlternativeProfile(request.AlternativeVault, request.AlternativeProfile)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to open vault profile. Make sure to sign first")
 	}

@@ -45,11 +45,12 @@ func (u *SignInVaultUsecase) Execute(request *SignInVaultRequest) error {
 		return err
 	}
 
+	// TODO secret should not be required here
 	var secret string
 	if request.VaultSecret == "" {
 		s, found := credentialsRepository.Fetch(vaultSetting.Identifier())
 		if !found {
-			return fmt.Errorf("Unable to find secret within the credentials store. Please provide a vault secret manually")
+			return fmt.Errorf("unable to find secret within the credentials store. Please provide a vault secret manually")
 		}
 		secret = s
 	} else {
@@ -59,7 +60,7 @@ func (u *SignInVaultUsecase) Execute(request *SignInVaultRequest) error {
 	settings.Activate(vaultSetting.Identifier())
 	settingsRepository.Store(settings)
 
-	vault := vault.NewOpVault(vaultSetting.Path())
+	vault := vault.NewOpVault(vaultSetting.Path(), request.VaultProfile)
 	_, err = vault.OpenProfile(request.VaultProfile, secret)
 	if err != nil {
 		return err
@@ -73,11 +74,11 @@ func (u *SignInVaultUsecase) Execute(request *SignInVaultRequest) error {
 
 func validateSignInVaultRequest(request *SignInVaultRequest) error {
 	if request.VaultAliasOrIdentifier == "" {
-		return errors.New("Please provide a vault alias or identifier")
+		return errors.New("please provide a vault alias or identifier")
 	}
 
 	if request.VaultProfile == "" {
-		return errors.New("Please provide a vault profile")
+		return errors.New("please provide a vault profile")
 	}
 
 	return nil

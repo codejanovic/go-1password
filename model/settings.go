@@ -8,4 +8,5 @@ type Settings interface {
 	Remove(identifierOrAlias string)
 	Activate(identifierOrAlias string) VaultSetting
 	Find(identifierOrAlias string) (VaultSetting, error)
+	ActiveOrAlternative(alternativeIdentifierOrAlias string) (VaultSetting, error)
 }
