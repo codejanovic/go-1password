@@ -5,7 +5,7 @@ import (
 
 	"github.com/codejanovic/gordon/model"
 
-	interaction "github.com/codejanovic/gordon/interaction"
+	"github.com/codejanovic/gordon/interaction"
 	"github.com/codejanovic/gordon/repository"
 	"github.com/codejanovic/gordon/vault"
 )
@@ -46,10 +46,7 @@ func requireActiveOrAlternativeProfile(alternativeVault string, alternativeProfi
 				credentialsRepository.Store(foundVaultSetting.Identifier(), secret)
 			})
 
-		if err != nil {
-			return nil, err
-		}
-		return foundProfile, nil
+		return foundProfile, err
 
 	}
 
@@ -78,9 +75,9 @@ func requiresOpenedProfile(login func(secret string) (vault.Profile, error), fet
 		}
 	}
 
+	userAction := interaction.NewConsoleInteraction()
 	for i := 0; i < 3; i++ {
-		interaction := interaction.NewConsoleInteraction()
-		secretFromUser, err := interaction.AskForVaultPassword()
+		secretFromUser, err := userAction.AskForVaultPassword()
 		if err != nil {
 			continue
 		}
