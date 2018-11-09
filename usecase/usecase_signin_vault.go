@@ -2,10 +2,7 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/codejanovic/gordon/repository"
-	"github.com/codejanovic/gordon/vault"
 )
 
 // SignInVaultUsecase usecase
@@ -38,37 +35,21 @@ func (u *SignInVaultUsecase) Execute(request *SignInVaultRequest) error {
 	}
 
 	settingsRepository := repository.NewSettingsRepository()
-	credentialsRepository := repository.NewCredentialsRepository()
 	settings := settingsRepository.Fetch()
 	vaultSetting, err := settings.Find(request.VaultAliasOrIdentifier)
 	if err != nil {
 		return err
 	}
 
-	// TODO secret should not be required here
-	var secret string
-	if request.VaultSecret == "" {
-		s, found := credentialsRepository.Fetch(vaultSetting.Identifier())
-		if !found {
-			return fmt.Errorf("unable to find secret within the credentials store. Please provide a vault secret manually")
-		}
-		secret = s
-	} else {
-		secret = request.VaultSecret
-	}
-
+	vaultSetting.WithProfile(request.VaultProfile)
 	settings.Activate(vaultSetting.Identifier())
 	settingsRepository.Store(settings)
 
-	vault := vault.NewOpVault(vaultSetting.Path(), request.VaultProfile)
-	_, err = vault.OpenProfile(request.VaultProfile, secret)
+	_, err = requireActiveOrAlternativeProfile("", "")
 	if err != nil {
 		return err
 	}
 
-	vaultSetting.WithProfile(request.VaultProfile)
-	settingsRepository.Store(settings)
-	credentialsRepository.Store(vaultSetting.Identifier(), secret)
 	return nil
 }
 

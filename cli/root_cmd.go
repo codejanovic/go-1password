@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"fmt"
 	e "github.com/codejanovic/gordon/environment"
+	"github.com/codejanovic/gordon/fatal"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fatal.Crash(err, "Lets see what the stacktrace talks")
 		os.Exit(1)
 	}
 }
