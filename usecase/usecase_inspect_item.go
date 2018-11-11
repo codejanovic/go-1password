@@ -12,6 +12,7 @@ type InspectItemUsecase struct {
 
 // InspectItemRequest struct
 type InspectItemRequest struct {
+	ShowPassword       bool
 	ItemName           string
 	AlternativeVault   string
 	AlternativeProfile string
@@ -47,7 +48,7 @@ func (u *InspectItemUsecase) Execute(request *InspectItemRequest) (*InspectItemR
 	var inspectItem *ItemInspectModel
 	for _, item := range profile.Items() {
 		if strings.EqualFold(item.Name(), request.ItemName) {
-			inspectItem = toItemInspectModel(item)
+			inspectItem = toItemInspectModel(item, request.ShowPassword)
 			break
 		}
 	}

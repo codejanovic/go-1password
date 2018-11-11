@@ -5,6 +5,9 @@ import (
 	"github.com/codejanovic/gordon/vault"
 )
 
+type ValueModel struct {
+}
+
 // ItemInspectModel struct
 type ItemInspectModel struct {
 	Name   string               `json:"name"`
@@ -47,19 +50,19 @@ type VaultThinModel struct {
 	Alias      string `json:"alias"`
 }
 
-func toFieldInspectModel(field vault.Field) *FieldInspectModel {
+func toFieldInspectModel(field vault.Field, showPassword bool) *FieldInspectModel {
 	return &FieldInspectModel{
 		Name:       field.Name(),
-		Value:      field.Value(),
+		Value:      field.Value(showPassword),
 		IsPassword: field.IsPassword(),
 	}
 }
 
-func toItemInspectModel(item vault.Item) *ItemInspectModel {
+func toItemInspectModel(item vault.Item, showPassword bool) *ItemInspectModel {
 	var inspectItem *ItemInspectModel
 	inspectFields := make([]*FieldInspectModel, 0)
 	for _, field := range item.Fields() {
-		inspectFields = append(inspectFields, toFieldInspectModel(field))
+		inspectFields = append(inspectFields, toFieldInspectModel(field, showPassword))
 	}
 	inspectItem = &ItemInspectModel{
 		Name:   item.Name(),

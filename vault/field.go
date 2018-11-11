@@ -7,7 +7,7 @@ import (
 // Field interface
 type Field interface {
 	Name() string
-	Value() string
+	Value(showPassword bool) string
 	IsPassword() bool
 	IsEmail() bool
 }
@@ -34,6 +34,9 @@ func (f *opVaultField) IsEmail() bool {
 	return f.fieldInternal.Type() == opvault.EmailFieldType
 }
 
-func (f *opVaultField) Value() string {
+func (f *opVaultField) Value(showPassword bool) string {
+	if f.IsPassword() && !showPassword {
+		return "***********"
+	}
 	return f.fieldInternal.Value()
 }
